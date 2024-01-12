@@ -496,7 +496,8 @@ class JaguarDocumentStore:
                     nvec.append(k)
                     vvec.append(v)
 
-        return nvec, vvec, filepath
+        vvec_s = [str(e) for e in vvec]
+        return nvec, vvec_s, filepath
 
     def _convert_to_where(self, filter_object, is_nested=False):
         def format_value(value):
