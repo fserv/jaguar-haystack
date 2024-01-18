@@ -2,6 +2,7 @@ import json
 import time
 from haystack.dataclasses import Document
 from jaguar_haystack.jaguar import JaguarDocumentStore
+from jaguar_haystack.retriever import JaguarEmbeddingRetriever
 
 
 import logging
@@ -38,6 +39,7 @@ logger = logging.getLogger(__name__)
 
 class TestJaguarDocumentStore:
     docstore: JaguarDocumentStore
+    retriever: JaguarEmbeddingRetriever
     pod: str
     store: str
     mockClient: bool
@@ -51,6 +53,7 @@ class TestJaguarDocumentStore:
         vector_index = "v"
         vector_type = "cosine_fraction_float"
         vector_dimension = 3
+
         try:
             cls.docstore = JaguarDocumentStore(
                 cls.pod,
@@ -60,8 +63,19 @@ class TestJaguarDocumentStore:
                 vector_dimension,
                 url,
             )
+
+            cls.retriever = JaguarEmbeddingRetriever(
+                cls.pod,
+                cls.store,
+                vector_index,
+                vector_type,
+                vector_dimension,
+                url,
+            )
         except ValueError:
             cls.mockClient = True
+
+
 
     @classmethod
     def teardown_class(cls) -> None:
@@ -207,6 +221,19 @@ class TestJaguarDocumentStore:
         )
 
         assert len(docs) == 0
+
+    def test_retriever(self) -> None:
+        """Test that [0.4, 0.2, 0.8] will retrieve text Slow Clouds.
+        Here k is 1.
+        """
+        if self.mockClient:
+            return
+
+        qembedding = [0.4, 0.2, 0.8]
+        docs = self.retriever.run(embedding=qembedding, top_k=1)
+
+        assert len(docs) == 1
+        assert docs[0].content == "Slow Clouds"
 
     def test_search_anomalous(self) -> None:
         """Test detection of anomalousness."""

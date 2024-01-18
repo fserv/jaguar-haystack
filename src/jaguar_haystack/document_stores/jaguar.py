@@ -238,9 +238,8 @@ class JaguarDocumentStore:
           texts: text string to add to the jaguar vector store.
           embedding: embedding vector of the text, list of floats
           metadata: dict of metadata
-          kwargs: vector_index=name_of_vector_index
-                  file_column=name_of_file_column
-                  metadata={...}
+          kwargs: file_column: name_of_file_column
+                  text_tag: user-provided tag to be prepended to the text
 
         Returns:
             id from adding the text into the vectorstore
@@ -248,6 +247,10 @@ class JaguarDocumentStore:
         text = text.replace("'", "\\'")
         vcol = self._vector_index
         filecol = kwargs.get("file_column", "")
+        text_tag = kwargs.get("text_tag", "")
+
+        if text_tag != "":
+            text = text_tag + " " + text
 
         podstorevcol = self._pod + "." + self._store + "." + vcol
         q = "textcol " + podstorevcol
