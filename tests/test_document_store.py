@@ -230,7 +230,8 @@ class TestJaguarDocumentStore:
             return
 
         qembedding = [0.4, 0.2, 0.8]
-        docs = self.retriever.run(embedding=qembedding, top_k=1)
+        res = self.retriever.run(embedding=qembedding, top_k=1)
+        docs = res["documents"]
 
         assert len(docs) == 1
         assert docs[0].content == "Slow Clouds"
