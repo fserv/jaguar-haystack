@@ -2,7 +2,7 @@ import json, logging
 from typing import Any, List, Dict, Optional, Tuple
 from haystack import default_to_dict, default_from_dict
 from haystack.dataclasses import Document
-from haystack.document_stores.protocol import DuplicatePolicy
+from haystack.document_stores.types import DuplicatePolicy
 
 logger = logging.getLogger(__name__)
 
