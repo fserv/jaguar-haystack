@@ -49,13 +49,14 @@ document_store = JaguarDocumentStore(
     url,
 )
 
+document_store.login( "demouser" )
+
 # any meta data fields to be created and included
 metadata_fields = "author char(64), category char(16)"
 # size of each document text to be saved
 text_size = 1024
 
 document_store.create(metadata_fields, text_size)
-document_store.login( "demouser" )
 
 
 indexing_pipeline.add_node(component=text_converter, name="TextConverter", inputs=["File"])
