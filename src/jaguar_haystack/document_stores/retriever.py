@@ -105,7 +105,7 @@ class JaguarEmbeddingRetriever:
         embedding: List[float],
         top_k: Optional[int] = 3,
         **kwargs: Any
-    ) -> Dist[str, List[Document]]:
+    ) -> Dict[str, List[Document]]:
         """Query index to load top k most similar documents.
 
         Args:
