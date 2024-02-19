@@ -65,12 +65,8 @@ class TestJaguarDocumentStore:
             )
 
             cls.retriever = JaguarEmbeddingRetriever(
-                cls.pod,
-                cls.store,
-                vector_index,
-                vector_type,
-                vector_dimension,
-                url,
+                cls.docstore,
+                top_k = 1,
             )
         except ValueError:
             cls.mockClient = True
@@ -230,7 +226,7 @@ class TestJaguarDocumentStore:
             return
 
         qembedding = [0.4, 0.2, 0.8]
-        res = self.retriever.run(embedding=qembedding, top_k=1)
+        res = self.retriever.run(embedding=qembedding)
         docs = res["documents"]
 
         assert len(docs) == 1
