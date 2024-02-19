@@ -1,11 +1,11 @@
 import json, logging
 from typing import Any, List, Dict, Optional
-from haystack import default_to_dict, default_from_dict
-from haystack.dataclasses import Document
+from haystack import Document, component, default_from_dict, default_to_dict
 from jaguar_haystack.jaguar import JaguarDocumentStore
 
 logger = logging.getLogger(__name__)
 
+@component
 class JaguarEmbeddingRetriever:
     """Jaguar dense embedding retriever.
 
@@ -61,19 +61,19 @@ class JaguarEmbeddingRetriever:
         return default_from_dict(cls, data)
 
     @component.output_types(documents=List[Document])
-    def run(self, embedding: List[float], **kwargs ):
+    def run(self, query_embedding: List[float], **kwargs ):
         """
         Retrieve documents from the JaguarDocumentStore, based on their dense embeddings.
 
-        :param embedding: Embedding of the query.
+        :param query_embedding: Embedding of the query.
         :param kwargs:  may contain 'where', 'metadata_fields', 'args', 'fetch_k'
-        :return: List of Document similar to `embedding`.
+        :return: List of Document similar to `query_embedding`.
         """
         if self._filters is not None:
             where = self._document_store._convert_to_where(self._filters)
             kwargs['where'] = where
 
-        docs = self._document_store.search_similar_documents(embedding, k=self._top_k, **kwargs)
+        docs = self._document_store.search_similar_documents(embedding=query_embedding, k=self._top_k, **kwargs)
         return {"documents": docs}
 
     def count_all_documents(self) -> int:
